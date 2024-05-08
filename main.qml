@@ -3,7 +3,6 @@ import QtQuick.Controls 2.15
 import QtQuick.Dialogs 1.3
 import QtQuick.Layouts 1.12
 
-
 ApplicationWindow {
     visible: true
     width: 800
@@ -18,6 +17,8 @@ ApplicationWindow {
                 return homeComponent;
             case "page1":
                 return page1Component;
+            case "page2":
+                return page2Component;
         }
     }
 
@@ -31,10 +32,14 @@ ApplicationWindow {
     }
 
     Button {
-        text: "Page 1"
+        text: "Метод Knn"
         onClicked: mainWindow.switchPage("page1")
     }
 
+Button {
+        text: "Метод Случайного Леса"
+        onClicked: mainWindow.switchPage("page2")
+    }
     }
 
      Item {
@@ -54,6 +59,44 @@ ApplicationWindow {
 Component {
     id: homeComponent
     Item {
+  Item {
+    width: 1300
+    height: 1300
+
+    Image {
+        source: "images/2.jpg"
+        anchors.fill: parent
+    }
+}
+        Label {
+            text: "Home Page"
+            x: 20 // Отступ слева
+            y: 50
+        }
+        Label {
+            text: "Случайный лес"
+            x: 20 // Отступ слева
+            y: 70
+        }
+        Label {
+            text: "Метод k-ближайших соседей "
+            x: 20 // Отступ слева
+            y: 90
+        }
+    }
+}
+Component {
+    id: page1Component
+    Item {
+   Item {
+    width: 1300
+    height: 1300
+
+    Image {
+        source: "images/4.png"
+        anchors.fill: parent
+    }
+}
         Button {
             text: "Load File"
             onClicked: {
@@ -84,7 +127,7 @@ Component {
         }
 
         Label {
-            text: "Home Page"
+            text: "Классификация Knn"
             x: 20 // Отступ слева
             y: 50
         }
@@ -96,8 +139,17 @@ Component {
     }
 }
 Component {
-    id: page1Component
+    id: page2Component
     Item {
+    Item {
+    width: 1300
+    height: 1300
+
+    Image {
+        source: "images/3.jpg"
+        anchors.fill: parent
+    }
+}
         Button {
             text: "Load File"
             onClicked: {
@@ -128,7 +180,7 @@ Component {
         }
 
         Label {
-            text: "Home Page"
+            text: "Классификация Случайного Леса"
             x: 20 // Отступ слева
             y: 50
         }
@@ -148,7 +200,7 @@ Component {
             var selectedFile = file_dialog.fileUrl
             //analysis.analyzeFile(selectedFile)
             myObject.loadFile1(selectedFile)
-            //homeComponent.selectedFilePath = selectedFile // Присваивание выбранного пути к файлу свойству selectedFilePath
+            homeComponent.selectedFilePath = selectedFile // Присваивание выбранного пути к файлу свойству selectedFilePath
         }
     }
 FileDialog {

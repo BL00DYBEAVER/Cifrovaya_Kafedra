@@ -9,7 +9,7 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from scipy.stats import mode
 import matplotlib.pyplot as plt
-
+from tkinter.messagebox import showerror, showwarning, showinfo
 
 class K_Nearest_Neighbors_Classifier():
     def __init__(self, K):
@@ -81,61 +81,70 @@ class MyPythonClass(QObject):
         print("----")
     @pyqtSlot()
     def analyzeFile(self):
-        print("--analyzeFile--")
-        print("address1 ",self.address1)
-        print("address2 ",self.address2)
-        # Загрузка данных и разделение их на обучающую и тестовую выборки
-        df = pd.read_csv(self.address1)
-        X = df.iloc[:, :-1].values
-        Y = df.iloc[:, -1:].values
-        X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=1 / 3, random_state=0)
 
-        df2 = pd.read_csv(self.address2)
-        X_test2 = df2.iloc[:, :-1].values
+        #print("--analyzeFile--")
+       #print("address1 ",self.address1)
+       #print("address2 ",self.address2)
+        if ((self.address1 == None)):
+                showerror(title="Ошибка", message="Файл 1 не выбран")
+        elif ((self.address2 == None)):
+                showerror(title="Ошибка", message="Файл 2 не выбран")
+        else:
+            df = pd.read_csv(self.address1)
+            X = df.iloc[:, :-1].values
+            Y = df.iloc[:, -1:].values
+            X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=1 / 3, random_state=0)
 
-        # Проведение экспериментов с разными значениями K и метриками расстояния
-        k_v = [3, 4, 5]
-        metrics_v = [1, 2, 3]
+            df2 = pd.read_csv(self.address2)
+            X_test2 = df2.iloc[:, :-1].values
 
-        results = []
-        for k in k_v:
-            for metric in metrics_v:
-                model = K_Nearest_Neighbors_Classifier(K=k)
-                model.fit(X_train, Y_train)
-                Y_pred2 = model.predict(X_test2, metric)
-                results.append((k, metric, Y_pred2))
+            # Проведение экспериментов с разными значениями K и метриками расстояния
+            k_v = [3, 4, 5]
+            metrics_v = [1, 2, 3]
 
-        results_df = pd.DataFrame(results, columns=["K", "metrics", "predictions"])
-        print(results_df)
+            results = []
+            for k in k_v:
+                for metric in metrics_v:
+                    model = K_Nearest_Neighbors_Classifier(K=k)
+                    model.fit(X_train, Y_train)
+                    Y_pred2 = model.predict(X_test2, metric)
+                    results.append((k, metric, Y_pred2))
 
-        # Вывод результатов классификации
-        classification_results = []
-        for i in range(len(Y_pred2)):
-            result = {
-                'Features': X_test2[i],
-                'Predicted Label': Y_pred2[i]
-            }
-            classification_results.append(result)
+            results_df = pd.DataFrame(results, columns=["K", "metrics", "predictions"])
+            print(results_df)
 
-        for result in classification_results:
-            print("Признаки:", result['Features'])
-            print("Предсказанная метка:", result['Predicted Label'])
-            print()
+            # Вывод результатов классификации
+            classification_results = []
+            for i in range(len(Y_pred2)):
+                result = {
+                    'Features': X_test2[i],
+                    'Predicted Label': Y_pred2[i]
+                }
+                classification_results.append(result)
 
-        # Добавление диаграммы рассеяния
-        plt.figure(figsize=(8, 6))
-        for result in classification_results:
-            features = result['Features']
-            predicted_label = result['Predicted Label']
-            color = 'green' if 0 == predicted_label else 'red'
-            marker = 'o' if 1 == predicted_label else 'x'
-            plt.scatter(features[0], features[1], color=color, marker=marker)
+            for result in classification_results:
+                print("Признаки:", result['Features'])
+                print("Предсказанная метка:", result['Predicted Label'])
+                print()
 
-        plt.xlabel('Признак 1', )
-        plt.ylabel('Признак 2')
-        plt.title('Результаты классификации')
-        plt.legend(['0','1'])
-        plt.show()
+            # Добавление диаграммы рассеяния
+            plt.figure(figsize=(8, 6))
+            for result in classification_results:
+                features = result['Features']
+                predicted_label = result['Predicted Label']
+                color = 'green' if 0 == predicted_label else 'red'
+                marker = 'o' if 0 == predicted_label else 'x'
+                plt.scatter(features[0], features[1], color=color, marker=marker)
+
+            # Создание отдельных точек для каждого класса в легенде
+            class_0 = plt.scatter([], [], color='green', marker='o')
+            class_1 = plt.scatter([], [], color='red', marker='x')
+            plt.legend([class_0, class_1], ['0', '1'])
+
+            plt.xlabel('Признак 1')
+            plt.ylabel('Признак 2')
+            plt.title('Результаты классификации')
+            plt.show()
 
 class MainWindow(QObject):
     switchPageSignal = pyqtSignal(str)
